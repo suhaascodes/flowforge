@@ -49,7 +49,7 @@ export default function ProtectedLayout() {
             logout={logout}
             onOpenMobileNav={() => setIsMobileSidebarOpen(true)}
           />
-          <main className="min-w-0 flex-1 px-4 pb-6 pt-4 sm:px-6 lg:px-8">
+          <main className="min-w-0 flex-1 px-4 pb-8 pt-4 sm:px-6 lg:px-8">
             <Outlet />
           </main>
         </div>

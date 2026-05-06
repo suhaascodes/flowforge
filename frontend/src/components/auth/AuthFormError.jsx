@@ -4,7 +4,7 @@ export default function AuthFormError({ message }) {
   }
 
   return (
-    <div className="rounded-xl border border-rose-400/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">
+    <div className="rounded-2xl border border-rose-400/20 bg-rose-500/10 px-3.5 py-3 text-sm leading-6 text-rose-100">
       {message}
     </div>
   );

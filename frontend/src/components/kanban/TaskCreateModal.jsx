@@ -54,17 +54,17 @@ export default function TaskCreateModal({ open, users, onClose, onSubmit, isSavi
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.98 }}
             transition={{ duration: 0.2 }}
-            className="fixed left-1/2 top-1/2 z-50 w-[94vw] max-w-xl -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/15 bg-[#0d1628] p-5 shadow-[0_40px_100px_rgba(2,6,23,0.8)] sm:p-6"
+            className="fixed left-1/2 top-1/2 z-50 w-[94vw] max-w-xl -translate-x-1/2 -translate-y-1/2 rounded-[1.5rem] border border-white/10 bg-[#0d1628]/98 p-5 shadow-[0_40px_100px_rgba(2,6,23,0.82)] sm:p-6"
           >
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.16em] text-cyan-200/80">Kanban</p>
-                <h3 className="mt-1 text-lg font-semibold text-white">Create Task</h3>
+                <p className="text-[11px] uppercase tracking-[0.22em] text-cyan-200/80">Kanban</p>
+                <h3 className="mt-1 text-lg font-semibold tracking-[-0.02em] text-white">Create Task</h3>
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-lg border border-white/15 bg-white/5 p-2 text-slate-300 hover:bg-white/10"
+                className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-slate-300 hover:bg-white/10"
                 aria-label="Close"
               >
                 <FiX className="h-4 w-4" />
@@ -82,7 +82,7 @@ export default function TaskCreateModal({ open, users, onClose, onSubmit, isSavi
                   value={form.title}
                   onChange={handleChange}
                   placeholder="Enter task title"
-                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-300/40 focus:outline-none"
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-3.5 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-300/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/15"
                 />
               </div>
 
@@ -97,7 +97,7 @@ export default function TaskCreateModal({ open, users, onClose, onSubmit, isSavi
                   onChange={handleChange}
                   rows={3}
                   placeholder="Add implementation details"
-                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-300/40 focus:outline-none"
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-3.5 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-300/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/15"
                 />
               </div>
 
@@ -111,7 +111,7 @@ export default function TaskCreateModal({ open, users, onClose, onSubmit, isSavi
                     name="status"
                     value={form.status}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-100 focus:border-cyan-300/40 focus:outline-none"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-3.5 py-3 text-sm text-slate-100 focus:border-cyan-300/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/15"
                   >
                     {Object.entries(KANBAN_COLUMN_META).map(([value, meta]) => (
                       <option key={value} value={value} className="bg-[#0d1628]">
@@ -130,7 +130,7 @@ export default function TaskCreateModal({ open, users, onClose, onSubmit, isSavi
                     name="priority"
                     value={form.priority}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-100 focus:border-cyan-300/40 focus:outline-none"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-3.5 py-3 text-sm text-slate-100 focus:border-cyan-300/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/15"
                   >
                     {Object.entries(PRIORITY_META).map(([value, meta]) => (
                       <option key={value} value={value} className="bg-[#0d1628]">
@@ -151,7 +151,7 @@ export default function TaskCreateModal({ open, users, onClose, onSubmit, isSavi
                     name="assignedTo"
                     value={form.assignedTo}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-100 focus:border-cyan-300/40 focus:outline-none"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-3.5 py-3 text-sm text-slate-100 focus:border-cyan-300/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/15"
                   >
                     <option value="" className="bg-[#0d1628]">
                       Unassigned
@@ -174,7 +174,7 @@ export default function TaskCreateModal({ open, users, onClose, onSubmit, isSavi
                     type="date"
                     value={form.dueDate}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-100 focus:border-cyan-300/40 focus:outline-none"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-3.5 py-3 text-sm text-slate-100 focus:border-cyan-300/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/15"
                   />
                 </div>
               </div>
@@ -189,26 +189,26 @@ export default function TaskCreateModal({ open, users, onClose, onSubmit, isSavi
                   value={form.tags}
                   onChange={handleChange}
                   placeholder="frontend, auth, sprint-14"
-                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-300/40 focus:outline-none"
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-3.5 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-300/40 focus:outline-none focus:ring-2 focus:ring-cyan-300/15"
                 />
               </div>
 
               {error ? (
-                <div className="rounded-lg border border-rose-300/30 bg-rose-300/10 px-3 py-2 text-sm text-rose-100">{error}</div>
+                <div className="rounded-2xl border border-rose-300/20 bg-rose-300/10 px-3.5 py-3 text-sm text-rose-100">{error}</div>
               ) : null}
 
               <div className="flex justify-end gap-2 pt-1">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-xl border border-white/15 bg-white/5 px-3.5 py-2 text-sm text-slate-300 hover:bg-white/10"
+                  className="rounded-2xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-slate-300 hover:bg-white/10"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-300 to-blue-400 px-3.5 py-2 text-sm font-semibold text-slate-900 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+                  className="inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-cyan-300 to-blue-400 px-3.5 py-2.5 text-sm font-semibold text-slate-900 shadow-[0_12px_28px_rgba(8,145,178,0.18)] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   <FiPlus className="h-4 w-4" />
                   {isSaving ? 'Creating...' : 'Create Task'}

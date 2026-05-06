@@ -3,7 +3,7 @@ export default function AuthButton({ children, loading = false, disabled = false
     <button
       type="submit"
       disabled={disabled || loading}
-      className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-sky-900/40 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+      className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-300 via-sky-400 to-indigo-400 px-4 py-3 text-sm font-semibold text-slate-950 shadow-[0_14px_30px_rgba(14,165,233,0.22)] transition hover:-translate-y-[1px] hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
     >
       {loading ? (
         <>

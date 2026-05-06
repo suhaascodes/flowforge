@@ -27,11 +27,13 @@ export default function DashboardHomePage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="rounded-2xl border border-white/10 bg-gradient-to-r from-cyan-300/10 via-blue-400/10 to-violet-300/10 p-4 shadow-[0_16px_40px_rgba(2,6,23,0.35)] sm:p-6"
+        className="glass-panel-strong rounded-[1.5rem] p-4 sm:p-6"
       >
-        <p className="text-xs uppercase tracking-[0.22em] text-cyan-200/90">Dashboard Overview</p>
-        <h2 className="mt-2 text-xl font-semibold text-white sm:text-2xl">Build momentum without context switching.</h2>
-        <p className="mt-2 max-w-2xl text-sm text-slate-300">
+        <p className="text-[11px] uppercase tracking-[0.24em] text-cyan-200/90">Dashboard Overview</p>
+        <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-white sm:text-2xl">
+          Build momentum without context switching.
+        </h2>
+        <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-300">
           This shell is optimized for rapid expansion into kanban, analytics, task operations, and settings modules while
           keeping interaction patterns consistent.
         </p>
@@ -39,7 +41,12 @@ export default function DashboardHomePage() {
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {dashboardStats.map((item, index) => (
-          <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.06 }}>
+          <motion.div
+            key={item.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.06 }}
+          >
             <StatCard item={item} loading={loading} />
           </motion.div>
         ))}

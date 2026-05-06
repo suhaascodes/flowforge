@@ -109,7 +109,7 @@ export default function KanbanBoard({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <section className="kanban-scrollbar -mx-1 flex min-h-[560px] gap-3 overflow-x-auto px-1 pb-1">
+      <section className="kanban-scrollbar -mx-1 flex min-h-[560px] gap-3 overflow-x-auto px-1 pb-1 lg:gap-4">
         {columnOrder.map((status) => (
           <KanbanColumn
             key={status}
@@ -123,7 +123,11 @@ export default function KanbanBoard({
       </section>
 
       <DragOverlay dropAnimation={{ duration: 180, easing: 'ease-out' }}>
-        {activeTask ? <KanbanTaskCard task={activeTask} pending={false} onOpenDetail={() => {}} /> : null}
+        {activeTask ? (
+          <div className="rotate-2 scale-[1.02] shadow-[0_24px_70px_rgba(2,6,23,0.65)]">
+            <KanbanTaskCard task={activeTask} pending={false} onOpenDetail={() => {}} />
+          </div>
+        ) : null}
       </DragOverlay>
     </DndContext>
   );
