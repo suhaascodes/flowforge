@@ -18,9 +18,10 @@ function initialsFromName(name) {
     .toUpperCase();
 }
 
-export default function KanbanTaskCard({ task, pending = false, onOpenDetail }) {
+export default function KanbanTaskCard({ task, pending = false, onOpenDetail, canManageTasks = false }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
+    disabled: !canManageTasks,
     data: {
       type: 'task',
       task,
@@ -98,14 +99,16 @@ export default function KanbanTaskCard({ task, pending = false, onOpenDetail }) 
         <span className="inline-flex h-7 w-7 items-center justify-center rounded-xl bg-cyan-300/15 text-[10px] font-semibold text-cyan-100 ring-1 ring-cyan-300/20">
           {assigneeInitials}
         </span>
-        <button
-          type="button"
-          className="cursor-grab rounded-xl border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-slate-400 active:cursor-grabbing"
-          {...attributes}
-          {...listeners}
-        >
-          Drag
-        </button>
+        {canManageTasks ? (
+          <button
+            type="button"
+            className="cursor-grab rounded-xl border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-slate-400 active:cursor-grabbing"
+            {...attributes}
+            {...listeners}
+          >
+            Drag
+          </button>
+        ) : null}
       </div>
     </article>
   );

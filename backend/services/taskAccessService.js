@@ -26,7 +26,7 @@ export function canUserAccessTask(currentUser, task) {
     return true;
   }
 
-  return String(task.createdBy) === String(currentUser._id) || String(task.assignedTo || '') === String(currentUser._id);
+  return String(task.assignedTo || '') === String(currentUser._id);
 }
 
 export async function ensureTaskAccess(currentUser, taskId) {
@@ -70,7 +70,7 @@ export function buildAccessibleTaskQuery(currentUser, filters = {}, searchFilter
 
   if (currentUser.role !== 'admin') {
     conditions.push({
-      $or: [{ createdBy: currentUser._id }, { assignedTo: currentUser._id }],
+      assignedTo: currentUser._id,
     });
   }
 

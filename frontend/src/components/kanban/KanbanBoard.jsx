@@ -40,6 +40,7 @@ export default function KanbanBoard({
   moveTaskLocally,
   persistTaskStatus,
   onOpenDetail,
+  canManageTasks = false,
 }) {
   const [activeTaskId, setActiveTaskId] = useState(null);
   const dragOriginStatusRef = useRef(null);
@@ -58,6 +59,10 @@ export default function KanbanBoard({
   const activeTask = useMemo(() => (activeTaskId ? getTaskById(activeTaskId) : null), [activeTaskId, getTaskById]);
 
   const handleDragStart = (event) => {
+    if (!canManageTasks) {
+      return;
+    }
+
     const taskId = event?.active?.id;
 
     if (!taskId) {
@@ -69,6 +74,10 @@ export default function KanbanBoard({
   };
 
   const handleDragEnd = async (event) => {
+    if (!canManageTasks) {
+      return;
+    }
+
     const activeId = event?.active?.id;
     const overId = event?.over?.id;
 
@@ -118,14 +127,15 @@ export default function KanbanBoard({
             loading={loading}
             pendingStatusUpdates={pendingStatusUpdates}
             onOpenDetail={onOpenDetail}
+            canManageTasks={canManageTasks}
           />
         ))}
       </section>
 
       <DragOverlay dropAnimation={{ duration: 180, easing: 'ease-out' }}>
-        {activeTask ? (
+        {canManageTasks && activeTask ? (
           <div className="rotate-2 scale-[1.02] shadow-[0_24px_70px_rgba(2,6,23,0.65)]">
-            <KanbanTaskCard task={activeTask} pending={false} onOpenDetail={() => {}} />
+            <KanbanTaskCard task={activeTask} pending={false} onOpenDetail={() => {}} canManageTasks={canManageTasks} />
           </div>
         ) : null}
       </DragOverlay>

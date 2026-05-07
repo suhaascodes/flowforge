@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import PublicLayout from './layouts/PublicLayout';
@@ -7,6 +8,10 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardHomePage from './pages/DashboardHomePage';
 import ModulePlaceholderPage from './pages/ModulePlaceholderPage';
 import KanbanBoardPage from './pages/KanbanBoardPage';
+import TaskWorkspacePage from './pages/TaskWorkspacePage';
+
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 
 export default function App() {
   return (
@@ -21,32 +26,34 @@ export default function App() {
           <Route element={<ProtectedLayout />}>
             <Route path="/app" element={<DashboardHomePage />} />
             <Route path="/app/kanban" element={<KanbanBoardPage />} />
-            <Route
-              path="/app/tasks"
-              element={
-                <ModulePlaceholderPage
-                  title="Task Workspace"
-                  description="Task list, detailed filters, and editor views are reserved for upcoming milestones."
-                />
-              }
-            />
+            <Route path="/app/tasks" element={<TaskWorkspacePage />} />
             <Route
               path="/app/analytics"
-              element={
-                <ModulePlaceholderPage
-                  title="Analytics"
-                  description="Operational reports and trend dashboards will be available once data pipelines are connected."
-                />
-              }
+              element={(
+                <Suspense
+                  fallback={(
+                    <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-white/10 bg-[#0d1628]/90">
+                      <div className="h-9 w-9 animate-spin rounded-full border-4 border-cyan-300/80 border-t-transparent" />
+                    </div>
+                  )}
+                >
+                  <AnalyticsPage />
+                </Suspense>
+              )}
             />
             <Route
               path="/app/settings"
-              element={
-                <ModulePlaceholderPage
-                  title="Settings"
-                  description="Workspace settings, profile controls, and role management will be added in a future module."
-                />
-              }
+              element={(
+                <Suspense
+                  fallback={(
+                    <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-white/10 bg-[#0d1628]/90">
+                      <div className="h-9 w-9 animate-spin rounded-full border-4 border-cyan-300/80 border-t-transparent" />
+                    </div>
+                  )}
+                >
+                  <SettingsPage />
+                </Suspense>
+              )}
             />
           </Route>
 

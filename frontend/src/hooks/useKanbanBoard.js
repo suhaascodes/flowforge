@@ -6,6 +6,7 @@ import {
   buildBoardState,
   buildTaskCreatePayload,
   createKanbanTask,
+  deleteKanbanTask,
   fetchKanbanBootstrap,
   moveTaskStatus,
 } from '../services/kanbanService';
@@ -26,13 +27,14 @@ export default function useKanbanBoard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [savingTask, setSavingTask] = useState(false);
+  const [deletingTaskIds, setDeletingTaskIds] = useState({});
   const [pendingStatusUpdates, setPendingStatusUpdates] = useState({});
 
-  const loadBoard = useCallback(async () => {
+  const loadBoard = useCallback(async (currentUser) => {
     try {
       setLoading(true);
       setError('');
-      const bootstrap = await fetchKanbanBootstrap();
+      const bootstrap = await fetchKanbanBootstrap(currentUser);
       const nextState = buildBoardState(bootstrap.tasks);
 
       setTasksById(nextState.tasksById);
@@ -251,6 +253,43 @@ export default function useKanbanBoard() {
     [users],
   );
 
+  const deleteTaskOptimistic = useCallback(async (taskId) => {
+    const previousTask = tasksById[taskId];
+    const previousStatus = findTaskStatus(taskId);
+
+    if (!previousTask || !previousStatus) {
+      return;
+    }
+
+    setDeletingTaskIds((prev) => ({ ...prev, [taskId]: true }));
+    setTasksById((prev) => {
+      const next = { ...prev };
+      delete next[taskId];
+      return next;
+    });
+    setColumnTaskIds((prev) => ({
+      ...prev,
+      [previousStatus]: (prev[previousStatus] || []).filter((id) => id !== taskId),
+    }));
+
+    try {
+      await deleteKanbanTask(taskId);
+    } catch (deleteError) {
+      setTasksById((prev) => ({ ...prev, [taskId]: previousTask }));
+      setColumnTaskIds((prev) => ({
+        ...prev,
+        [previousStatus]: [taskId, ...(prev[previousStatus] || [])],
+      }));
+      throw deleteError;
+    } finally {
+      setDeletingTaskIds((prev) => {
+        const next = { ...prev };
+        delete next[taskId];
+        return next;
+      });
+    }
+  }, [findTaskStatus, tasksById]);
+
   return {
     columnOrder: KANBAN_COLUMN_ORDER,
     tasksByColumn,
@@ -259,6 +298,7 @@ export default function useKanbanBoard() {
     loading,
     error,
     savingTask,
+    deletingTaskIds,
     pendingStatusUpdates,
     loadBoard,
     getTaskById,
@@ -268,5 +308,6 @@ export default function useKanbanBoard() {
     persistTaskStatus,
     updateTaskStatusOptimistic,
     createTaskOptimistic,
+    deleteTaskOptimistic,
   };
 }

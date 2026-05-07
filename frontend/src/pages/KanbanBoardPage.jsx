@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function KanbanBoardPage() {
   const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const {
     columnOrder,
     tasksByColumn,
@@ -17,6 +18,7 @@ export default function KanbanBoardPage() {
     loading,
     error,
     savingTask,
+    deletingTaskIds,
     pendingStatusUpdates,
     loadBoard,
     getTaskById,
@@ -26,6 +28,7 @@ export default function KanbanBoardPage() {
     persistTaskStatus,
     updateTaskStatusOptimistic,
     createTaskOptimistic,
+    deleteTaskOptimistic,
   } = useKanbanBoard();
 
   const [createOpen, setCreateOpen] = useState(false);
@@ -33,21 +36,45 @@ export default function KanbanBoardPage() {
   const [detailError, setDetailError] = useState('');
 
   useEffect(() => {
-    loadBoard();
-  }, [loadBoard]);
+    if (user) {
+      loadBoard(user);
+    }
+  }, [loadBoard, user]);
 
   const detailTask = useMemo(() => getTaskById(detailTaskId), [detailTaskId, getTaskById]);
 
   const handleCreate = async (formData) => {
+    if (!isAdmin) {
+      return;
+    }
+
     await createTaskOptimistic(formData, user);
   };
 
   const handleStatusMoveFromModal = async (taskId, status) => {
+    if (!isAdmin) {
+      return;
+    }
+
     try {
       setDetailError('');
       await updateTaskStatusOptimistic(taskId, status);
     } catch (moveError) {
       setDetailError(moveError?.message || 'Unable to move task.');
+    }
+  };
+
+  const handleDeleteFromModal = async (taskId) => {
+    if (!isAdmin) {
+      return;
+    }
+
+    try {
+      setDetailError('');
+      await deleteTaskOptimistic(taskId);
+      setDetailTaskId(null);
+    } catch (deleteError) {
+      setDetailError(deleteError?.response?.data?.message || 'Unable to delete task.');
     }
   };
 
@@ -63,14 +90,16 @@ export default function KanbanBoardPage() {
           <h2 className="mt-1 text-xl font-semibold text-white">Manage sprint flow with drag and momentum.</h2>
           <p className="mt-2 text-sm text-slate-300">{taskCount} tasks across 6 delivery stages.</p>
         </div>
-        <button
-          type="button"
-          onClick={() => setCreateOpen(true)}
-          className="inline-flex items-center gap-2 self-start rounded-xl bg-gradient-to-r from-cyan-300 to-blue-400 px-3.5 py-2 text-sm font-semibold text-slate-900 hover:brightness-110"
-        >
-          <FiPlus className="h-4 w-4" />
-          New Task
-        </button>
+        {isAdmin ? (
+          <button
+            type="button"
+            onClick={() => setCreateOpen(true)}
+            className="inline-flex items-center gap-2 self-start rounded-xl bg-gradient-to-r from-cyan-300 to-blue-400 px-3.5 py-2 text-sm font-semibold text-slate-900 hover:brightness-110"
+          >
+            <FiPlus className="h-4 w-4" />
+            New Task
+          </button>
+        ) : null}
       </motion.section>
 
       {error ? (
@@ -88,15 +117,18 @@ export default function KanbanBoardPage() {
         moveTaskLocally={moveTaskLocally}
         persistTaskStatus={persistTaskStatus}
         onOpenDetail={setDetailTaskId}
+        canManageTasks={isAdmin}
       />
 
-      <TaskCreateModal
-        open={createOpen}
-        users={users}
-        onClose={() => setCreateOpen(false)}
-        onSubmit={handleCreate}
-        isSaving={savingTask}
-      />
+      {isAdmin ? (
+        <TaskCreateModal
+          open={createOpen}
+          users={users}
+          onClose={() => setCreateOpen(false)}
+          onSubmit={handleCreate}
+          isSaving={savingTask}
+        />
+      ) : null}
 
       <TaskDetailModal
         open={Boolean(detailTask)}
@@ -106,6 +138,9 @@ export default function KanbanBoardPage() {
           setDetailError('');
         }}
         onMoveStatus={handleStatusMoveFromModal}
+        onDeleteTask={handleDeleteFromModal}
+        canManageTasks={isAdmin}
+        isDeleting={Boolean(detailTask && deletingTaskIds[detailTask.id])}
         isSaving={Boolean(detailTask && pendingStatusUpdates[detailTask.id])}
       />
 

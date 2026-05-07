@@ -80,14 +80,27 @@ export function buildTaskCreatePayload(formData) {
   };
 }
 
-export async function fetchKanbanBootstrap() {
-  const [tasksResponse, profileResponse] = await Promise.all([
-    taskAPI.getAll({ limit: 100, sortOrder: 'desc' }),
-    userAPI.getProfile(),
+export async function fetchKanbanBootstrap(currentUser) {
+  const tasksPromise = taskAPI.getAll({ limit: 100, sortOrder: 'desc' });
+  const profilePromise = userAPI.getProfile();
+  const usersPromise = currentUser?.role === 'admin'
+    ? userAPI.getAll({ limit: 100, isActive: true })
+    : profilePromise;
+
+  const [tasksResponse, profileResponse, usersResponse] = await Promise.all([
+    tasksPromise,
+    profilePromise,
+    usersPromise,
   ]);
 
   const tasks = (tasksResponse?.data?.data || []).map(mapApiTask);
-  const users = [normalizeUser(profileResponse?.data?.data?.user)].filter(Boolean);
+  const profileUser = normalizeUser(profileResponse?.data?.data?.user);
+  const usersData = currentUser?.role === 'admin' ? usersResponse?.data?.data : [profileResponse?.data?.data?.user];
+  const users = (Array.isArray(usersData) ? usersData : [usersData]).map(normalizeUser).filter(Boolean);
+
+  if (profileUser && !users.some((user) => user.id === profileUser.id)) {
+    users.unshift(profileUser);
+  }
 
   return { tasks, users };
 }
@@ -100,4 +113,8 @@ export async function createKanbanTask(payload) {
 export async function moveTaskStatus(taskId, status) {
   const response = await taskAPI.updateStatus(taskId, status);
   return mapApiTask(response?.data?.data?.task);
+}
+
+export async function deleteKanbanTask(taskId) {
+  await taskAPI.delete(taskId);
 }

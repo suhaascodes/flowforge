@@ -9,6 +9,7 @@ export default function KanbanColumn({
   pendingStatusUpdates,
   loading,
   onOpenDetail,
+  canManageTasks = false,
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `column-${status}`,
@@ -53,6 +54,7 @@ export default function KanbanColumn({
                   task={task}
                   pending={Boolean(pendingStatusUpdates[task.id])}
                   onOpenDetail={onOpenDetail}
+                  canManageTasks={canManageTasks}
                 />
               ))}
             </div>

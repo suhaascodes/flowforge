@@ -10,6 +10,7 @@ import taskRoutes from './routes/taskRoutes.js';
 import taskHistoryRoutes from './routes/historyRoutes.js';
 import { notFound } from './middleware/notFound.js';
 import errorHandler from './middleware/errorHandler.js';
+import { ensureDefaultAdmin } from './services/adminBootstrapService.js';
 
 // Load environment variables
 dotenv.config();
@@ -20,7 +21,11 @@ const app = express();
 app.disable('x-powered-by');
 
 // Connect to database
-connectDB();
+connectDB()
+  .then(() => ensureDefaultAdmin())
+  .catch((error) => {
+    console.error(`Failed to ensure default admin account: ${error.message}`);
+  });
 
 // Middleware
 app.use(helmet());
