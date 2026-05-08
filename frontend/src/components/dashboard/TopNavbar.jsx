@@ -17,6 +17,13 @@ function initialsFromName(name) {
 
 export default function TopNavbar({ pageTitle, user, logout, onOpenMobileNav }) {
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: 'Task assigned', body: 'You were assigned to "Design landing page"', time: '2h', read: false },
+    { id: 2, title: 'Comment', body: 'Anna commented on "Project brief"', time: '6h', read: false },
+    { id: 3, title: 'Backup', body: 'Daily backup completed successfully', time: '1d', read: true },
+  ]);
   const initials = useMemo(() => initialsFromName(user?.name), [user?.name]);
 
   return (
@@ -46,14 +53,70 @@ export default function TopNavbar({ pageTitle, user, logout, onOpenMobileNav }) 
             />
           </label>
 
-          <button
-            type="button"
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-200 transition hover:bg-white/10"
-            aria-label="Notifications"
-          >
-            <FiBell className="h-4 w-4" />
-            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-cyan-300" />
-          </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setNotifOpen((p) => !p)}
+              className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-200 transition hover:bg-white/10"
+              aria-label="Notifications"
+            >
+              <FiBell className="h-4 w-4" />
+              {notifications.filter((n) => !n.read).length > 0 ? (
+                <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-[10px] font-semibold text-white">
+                  {notifications.filter((n) => !n.read).length}
+                </span>
+              ) : (
+                <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-cyan-300" />
+              )}
+            </button>
+
+            <AnimatePresence>
+              {notifOpen ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 6 }}
+                  className="absolute right-0 mt-2 w-80 max-w-[90vw] rounded-2xl border border-white/10 bg-[#111827]/95 p-2.5 shadow-[0_22px_55px_rgba(2,6,23,0.55)] backdrop-blur-xl"
+                >
+                  <div className="flex items-center justify-between px-2 pb-2.5">
+                    <p className="text-sm font-medium text-slate-100">Notifications</p>
+                    <button
+                      type="button"
+                      onClick={() => setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))}
+                      className="text-xs text-slate-400 hover:underline"
+                    >
+                      Mark all read
+                    </button>
+                  </div>
+
+                  <div className="max-h-64 overflow-auto">
+                    {notifications.length === 0 ? (
+                      <p className="px-2 py-3 text-sm text-slate-400">No notifications</p>
+                    ) : (
+                      notifications.map((n) => (
+                        <button
+                          key={n.id}
+                          type="button"
+                          onClick={() => {
+                            setNotifications((prev) => prev.map((x) => (x.id === n.id ? { ...x, read: true } : x)));
+                          }}
+                          className={`w-full text-left px-2 py-2.5 transition hover:bg-white/5 ${n.read ? 'opacity-70' : ''}`}
+                        >
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <p className="text-sm font-medium text-slate-100">{n.title}</p>
+                              <p className="mt-1 truncate text-xs text-slate-400">{n.body}</p>
+                            </div>
+                            <div className="ml-3 text-xs text-slate-500">{n.time}</div>
+                          </div>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </div>
 
           <div className="relative">
             <button
